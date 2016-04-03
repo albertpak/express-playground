@@ -39,7 +39,10 @@ var router = express.Router();
 // in case we want to do something to request
 // before other routes handle it
 router.use(function (req, res, next) {
-  console.log('Something is happening.');
+  // console.log('Middleware route...');
+
+  console.log(req.params);
+
   next();
 });
 
@@ -73,10 +76,12 @@ router.route('/knights')
 
       res.json(knights);
     });
-  })
+  });
 
-  // Find a single knight
-  // Accessed at GET http://localhost:8080/api/knights/:knight_id
+// Find a single knight
+// Accessed at GET http://localhost:8080/api/knights/:knight_id
+
+router.route('/knights/:knight_id')
   .get(function (req, res) {
     Knight.findById(req.params.knight_id, function (err, knight) {
       if (err)
@@ -103,6 +108,19 @@ router.route('/knights')
 
         res.json({ message: 'Knight info has been updated!' });
       });
+    });
+  })
+
+  // Delete the knight with this _id
+  // Accessed at DELETE http://localhost:8080/api/knights/:knight_id
+  .delete(function (req, res) {
+    Knight.remove({
+      _id: req.params.knight_id,
+    }, function (err, knight) {
+      if (err)
+        res.send(err);
+
+      res.json({ message: 'Knight has been successfully deleted' });
     });
   });
 
