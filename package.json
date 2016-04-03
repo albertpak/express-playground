@@ -1,6 +1,9 @@
 {
   "name": "node-api",
   "main": "server.js",
+  "version": "1.0.0",
+  "description": "API for testing out ExpressJS",
+  "author": "Albert Pak",
   "dependencies": {
     "body-parser": "^1.0.2",
     "express": "^4.0.0",
