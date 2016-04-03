@@ -36,6 +36,8 @@ var port = process.env.PORT || 8080;
 var router = express.Router();
 
 // middleware to use for all requests
+// in case we want to do something to request
+// before other routes handle it
 router.use(function (req, res, next) {
   console.log('Something is happening.');
   next();
@@ -46,7 +48,8 @@ router.get('/', function (req, res) {
   res.json({ message: 'Welcome to API!' });
 });
 
-// create a knight (accessed at POST http://localhost:8080/api/knights)
+// Create a knight
+// Accessed at POST http://localhost:8080/api/knights)
 router.route('/knights')
   .post(function (req, res) {
     var knight = new Knight();
@@ -61,7 +64,8 @@ router.route('/knights')
     });
   })
 
-  // get all the knights (accessed at GET http://localhost:8080/api/knights)
+  // Get all the knights
+  // Accessed at GET http://localhost:8080/api/knights)
   .get(function (req, res) {
     Knight.find(function (err, knights) {
       if (err)
@@ -71,12 +75,34 @@ router.route('/knights')
     });
   })
 
+  // Find a single knight
+  // Accessed at GET http://localhost:8080/api/knights/:knight_id
   .get(function (req, res) {
     Knight.findById(req.params.knight_id, function (err, knight) {
       if (err)
         res.send(err);
 
       res.json(knight);
+    });
+  })
+
+  // Updating knights info
+  .put(function (req, res) {
+    // use our knight model to find the knight we want
+    Knight.findById(req.params.knight_id, function (err, knight) {
+
+      if (err)
+        res.send(err);
+
+      knight.name = req.body.name;  // update the knight's info
+
+      // save the knight
+      knight.save(function (err) {
+        if (err)
+          res.send(err);
+
+        res.json({ message: 'Knight info has been updated!' });
+      });
     });
   });
 
